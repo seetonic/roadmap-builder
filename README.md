@@ -1,4 +1,4 @@
-# Roadmap Builder (formerly Vertexflo)
+# Roadmap Builder
 
 A powerful, AI-assisted roadmap generation tool built with **Next.js 16**, **React 19**, and **Supabase**. Visualize your learning paths and project plans with an interactive, infinite canvas.
 
