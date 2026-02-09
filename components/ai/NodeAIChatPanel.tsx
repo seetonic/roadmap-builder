@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Send, Loader2, User, Bot, Trash2 } from 'lucide-react';
-import { generateContent } from '@/lib/ai/gemini';
 import { NODE_CHAT_SYSTEM_PROMPT } from '@/lib/ai/prompts';
 import { ChatMessage } from '@/types';
 import { clsx } from 'clsx';
@@ -72,7 +71,22 @@ export default function NodeAIChatPanel({
 
             const fullPrompt = `${systemPrompt}\n\nRecent Conversation:\n${conversationContext}\nUser: ${input}\nAI:`;
 
-            const responseText = await generateContent(fullPrompt);
+            const response = await fetch('/api/ai/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: fullPrompt,
+                    history: chatHistory.map(msg => ({
+                        role: msg.role,
+                        parts: msg.content
+                    })),
+                    context: { nodeTitle, nodeDescription, nodeNotes }
+                })
+            });
+
+            if (!response.ok) throw new Error('Chat failed');
+
+            const { response: responseText } = await response.json();
 
             const aiMessage: ChatMessage = {
                 role: 'assistant',

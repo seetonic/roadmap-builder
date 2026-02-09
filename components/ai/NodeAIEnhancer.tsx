@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Sparkles, Loader2, Check, X, Network, RotateCw } from 'lucide-react';
-import { enhanceNodeContent } from '@/lib/ai/nodeEnhancer';
 
 interface NodeAIEnhancerProps {
     nodeId: string;
@@ -44,11 +43,19 @@ export default function NodeAIEnhancer({
         setExpandedNodes(null); // Clear expansion preview when enhancing
 
         try {
-            const result = await enhanceNodeContent(
-                currentTitle,
-                currentDescription,
-                currentNotes
-            );
+            const response = await fetch('/api/ai/enhance', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: currentTitle,
+                    description: currentDescription,
+                    notes: currentNotes
+                })
+            });
+
+            if (!response.ok) throw new Error('Failed to enhance');
+
+            const result = await response.json();
             setEnhanced(result);
         } catch (err) {
             console.error(err);
@@ -64,15 +71,22 @@ export default function NodeAIEnhancer({
         setEnhanced(null); // Clear enhancement preview when expanding
 
         try {
-            const { generateChildNodes } = await import('@/lib/ai/nodeEnhancer');
-            const children = await generateChildNodes(
-                currentTitle,
-                currentDescription,
-                currentNotes
-            );
+            const response = await fetch('/api/ai/expand', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: currentTitle,
+                    description: currentDescription,
+                    notes: currentNotes
+                })
+            });
 
-            if (children && children.length > 0) {
-                setExpandedNodes(children);
+            if (!response.ok) throw new Error('Failed to expand');
+
+            const { childNodes } = await response.json();
+
+            if (childNodes && childNodes.length > 0) {
+                setExpandedNodes(childNodes);
             } else {
                 setError('No suggested topics found to expand.');
             }

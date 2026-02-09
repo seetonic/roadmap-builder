@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { X, Sparkles, Loader2 } from 'lucide-react';
-import { generateRoadmapFromText } from '@/lib/ai/roadmapGenerator';
 import { RoadmapNode, RoadmapEdge } from '@/types';
 
 interface RoadmapGeneratorModalProps {
@@ -30,7 +29,17 @@ export default function RoadmapGeneratorModal({
         setError('');
 
         try {
-            const { nodes, edges } = await generateRoadmapFromText(input);
+            const response = await fetch('/api/ai/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: input })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to generate roadmap');
+            }
+
+            const { nodes, edges } = await response.json();
             onGenerate(nodes, edges);
             onClose();
             setInput('');
