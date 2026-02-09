@@ -41,7 +41,7 @@ export default function ConfirmModal({
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="relative w-full max-w-md bg-[#1e1e1e] border border-white/10 rounded-2xl shadow-2xl overflow-hidden"
+                        className="relative w-full max-w-md bg-card border border-border rounded-2xl shadow-2xl overflow-hidden"
                     >
                         <div className="p-6">
                             <div className="flex items-start gap-4">
@@ -58,7 +58,7 @@ export default function ConfirmModal({
                                 </div>
                                 <button
                                     onClick={onClose}
-                                    className="p-2 hover:bg-white/10 rounded-lg transition-colors -mr-2 -mt-2"
+                                    className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-lg transition-colors -mr-2 -mt-2"
                                 >
                                     <X size={20} />
                                 </button>
@@ -67,7 +67,7 @@ export default function ConfirmModal({
                             <div className="flex gap-3 mt-8 justify-end">
                                 <button
                                     onClick={onClose}
-                                    className="px-4 py-2 rounded-lg hover:bg-white/5 transition-colors font-medium"
+                                    className="px-4 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-medium"
                                 >
                                     {cancelText}
                                 </button>

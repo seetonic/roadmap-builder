@@ -125,7 +125,7 @@ export default function NotePanel() {
                         ...n.data,
                         label: enhancedData.title,
                         description: enhancedData.description,
-                        note: `<p>${enhancedData.notes.replace(/\n/g, '<br>')}</p>`,
+                        note: enhancedData.notes,
                         aiEnhanced: true
                     }
                 };
@@ -134,7 +134,7 @@ export default function NotePanel() {
         }));
 
         // Update local content
-        setLocalContent(`<p>${enhancedData.notes.replace(/\n/g, '<br>')}</p>`);
+        setLocalContent(enhancedData.notes);
 
         // Save AI enhancement to database
         if (roadmapId) {

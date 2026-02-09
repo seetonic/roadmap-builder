@@ -55,7 +55,7 @@ const SectionNode = ({ id, data, selected, isConnectable }: NodeProps<RoadmapNod
 
 
             <div
-                className="w-full h-full rounded-3xl transition-all duration-300 group flex flex-col p-4 relative backdrop-blur-md bg-black/20 border-2"
+                className="w-full h-full rounded-3xl transition-all duration-300 group flex flex-col p-4 relative backdrop-blur-md bg-card/20 border-2"
                 style={{
                     backgroundColor: bgColor + '20', // Low opacity background
                     borderColor: bgColor,
@@ -64,7 +64,7 @@ const SectionNode = ({ id, data, selected, isConnectable }: NodeProps<RoadmapNod
             >
                 {/* Lock Indicator */}
                 {isLocked && (
-                    <div className="absolute top-2 right-2 p-1.5 bg-background/20 rounded-md text-white/50 backdrop-blur-sm z-10">
+                    <div className="absolute top-2 right-2 p-1.5 bg-background/20 rounded-md text-foreground/50 backdrop-blur-sm z-10">
                         <Lock size={14} />
                     </div>
                 )}
@@ -80,12 +80,12 @@ const SectionNode = ({ id, data, selected, isConnectable }: NodeProps<RoadmapNod
                             onChange={(e) => setLabel(e.target.value)}
                             onBlur={handleLabelSubmit}
                             onKeyDown={(e) => e.key === 'Enter' && handleLabelSubmit()}
-                            className="bg-transparent text-sm font-bold outline-none border-b border-white text-white w-full placeholder:text-white/50 pointer-events-auto font-sans"
+                            className="bg-transparent text-sm font-bold outline-none border-b border-foreground/20 text-foreground w-full placeholder:text-muted-foreground pointer-events-auto font-sans"
                         />
                     ) : (
                         <div
                             onDoubleClick={() => !isLocked && setIsEditing(true)}
-                            className={`text-sm font-bold text-white transition-colors pointer-events-auto inline-block font-sans ${!isLocked && 'cursor-text hover:text-white/80'}`}
+                            className={`text-sm font-bold text-foreground transition-colors pointer-events-auto inline-block font-sans ${!isLocked && 'cursor-text hover:text-foreground/80'}`}
                         >
                             {label}
                         </div>

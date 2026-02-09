@@ -180,7 +180,7 @@ export default function Dashboard() {
       {/* Background Grid */}
       <div className="absolute inset-0 pointer-events-none opacity-20"
         style={{
-          backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)',
+          backgroundImage: 'radial-gradient(var(--foreground) 1px, transparent 1px)',
           backgroundSize: '32px 32px'
         }}
       />
@@ -192,7 +192,7 @@ export default function Dashboard() {
             <RateLimitIndicator usage={usage} plan={currentPlan} />
             {!isLoadingPlan && (
               <>
-                <div className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-muted-foreground flex items-center gap-2">
+                <div className="px-3 py-1 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium text-muted-foreground flex items-center gap-2">
                   <Folder size={12} />
                   {usage.current} Roadmaps
                 </div>
@@ -226,7 +226,7 @@ export default function Dashboard() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="col-span-full py-20 text-center text-muted-foreground border-2 border-dashed border-white/5 rounded-3xl bg-white/5 backdrop-blur-sm"
+                className="col-span-full py-20 text-center text-muted-foreground border-2 border-dashed border-border rounded-3xl bg-muted/50 backdrop-blur-sm"
               >
                 <p>No roadmaps yet. Create one to get started!</p>
               </motion.div>
@@ -241,9 +241,9 @@ export default function Dashboard() {
                   className="group relative"
                 >
                   <Link href={`/roadmap/${project.id}`} className="block h-full">
-                    <div className="h-full glass border border-white/10 rounded-2xl p-6 transition-all duration-300 hover:border-primary/50 hover:bg-white/5 hover:shadow-2xl hover:-translate-y-1">
+                    <div className="h-full glass border border-border/50 rounded-2xl p-6 transition-all duration-300 hover:border-primary/50 hover:bg-muted/50 hover:shadow-2xl hover:-translate-y-1">
                       <div className="flex items-start justify-between mb-4">
-                        <div className="p-3 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-xl text-primary border border-white/5">
+                        <div className="p-3 bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-xl text-primary border border-border/50">
                           <Folder size={24} />
                         </div>
                         <div className="relative">
@@ -253,16 +253,16 @@ export default function Dashboard() {
                               e.stopPropagation();
                               setMenuOpenId(menuOpenId === project.id ? null : project.id);
                             }}
-                            className="p-2 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors"
+                            className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors"
                           >
                             <MoreVertical size={18} />
                           </button>
 
                           {menuOpenId === project.id && (
-                            <div className="absolute right-0 top-full mt-2 w-48 bg-card border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95">
+                            <div className="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95">
                               <button
                                 onClick={(e) => startRename(e, project)}
-                                className="w-full text-left px-4 py-3 text-sm hover:bg-white/5 flex items-center gap-2"
+                                className="w-full text-left px-4 py-3 text-sm hover:bg-black/5 dark:hover:bg-white/5 flex items-center gap-2"
                               >
                                 <Edit2 size={14} /> Rename
                               </button>
@@ -282,7 +282,7 @@ export default function Dashboard() {
                           {project.name}
                         </h3>
                         <div className="flex items-center gap-4 text-xs text-muted-foreground mt-4">
-                          <span className="flex items-center gap-1 bg-white/5 px-2 py-1 rounded-md border border-white/5">
+                          <span className="flex items-center gap-1 bg-black/5 dark:bg-white/5 px-2 py-1 rounded-md border border-black/5 dark:border-white/5">
                             <Calendar size={12} />
                             {formatDistanceToNow(project.lastModified, { addSuffix: true })}
                           </span>
@@ -305,22 +305,22 @@ export default function Dashboard() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-md bg-card border border-white/10 p-6 rounded-2xl shadow-2xl glass"
+              className="w-full max-w-md bg-card border border-border p-6 rounded-2xl shadow-2xl"
             >
               <h2 className="text-2xl font-bold font-brand mb-4">Create New Roadmap</h2>
 
-              <div className="flex gap-2 mb-6 p-1 bg-white/5 rounded-lg">
+              <div className="flex gap-2 mb-6 p-1 bg-black/5 dark:bg-white/5 rounded-lg">
                 <button
                   type="button"
                   onClick={() => setCreateMode('empty')}
-                  className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${createMode === 'empty' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:bg-white/5'}`}
+                  className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${createMode === 'empty' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5'}`}
                 >
                   Empty Sheet
                 </button>
                 <button
                   type="button"
                   onClick={() => setCreateMode('ai')}
-                  className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${createMode === 'ai' ? 'bg-purple-500 text-white shadow-sm' : 'text-muted-foreground hover:bg-white/5'}`}
+                  className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${createMode === 'ai' ? 'bg-purple-500 text-white shadow-sm' : 'text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5'}`}
                 >
                   AI Generate
                 </button>
@@ -336,7 +336,7 @@ export default function Dashboard() {
                       placeholder="e.g. My Awesome Project"
                       value={newProjectName}
                       onChange={(e) => setNewProjectName(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-lg"
+                      className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-lg"
                     />
                   </div>
 
@@ -356,7 +356,7 @@ export default function Dashboard() {
                           value={aiTopic}
                           onChange={(e) => setAiTopic(e.target.value)}
                           placeholder="e.g. Learning React.js from scratch, passing the bar exam, planning a wedding..."
-                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all text-sm min-h-[100px] resize-none"
+                          className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all text-sm min-h-[100px] resize-none"
                         />
                       </motion.div>
                     )}
@@ -367,7 +367,7 @@ export default function Dashboard() {
                   <button
                     type="button"
                     onClick={() => setIsCreateOpen(false)}
-                    className="px-4 py-2 hover:bg-white/10 rounded-lg text-muted-foreground transition-colors"
+                    className="px-4 py-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-lg text-muted-foreground transition-colors"
                   >
                     Cancel
                   </button>
@@ -400,7 +400,7 @@ export default function Dashboard() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-md bg-card border border-white/10 p-6 rounded-2xl shadow-2xl glass"
+              className="w-full max-w-md bg-card border border-border p-6 rounded-2xl shadow-2xl"
             >
               <h2 className="text-2xl font-bold font-brand mb-4">Rename Roadmap</h2>
               <form onSubmit={handleRename}>
@@ -409,13 +409,13 @@ export default function Dashboard() {
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all mb-6 text-lg"
+                  className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all mb-6 text-lg"
                 />
                 <div className="flex justify-end gap-3">
                   <button
                     type="button"
                     onClick={() => setEditingId(null)}
-                    className="px-4 py-2 hover:bg-white/10 rounded-lg text-muted-foreground transition-colors"
+                    className="px-4 py-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-lg text-muted-foreground transition-colors"
                   >
                     Cancel
                   </button>
