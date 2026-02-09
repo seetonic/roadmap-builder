@@ -71,6 +71,12 @@ Fully responsive design with seamless dark and light mode support locally and ac
 
     Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## 🎬 Live Demo
+
+Want to see the app in action? **Contact me for a live demo!**
+
+The AI features require a Gemini API key which is not included in this repository for security reasons. Feel free to reach out if you'd like to see the full functionality.
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
