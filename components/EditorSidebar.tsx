@@ -1,7 +1,7 @@
 "use client";
 
 import { useReactFlow } from '@xyflow/react';
-import { Download, Expand, Minimize, Plus, Layout, List, ArrowLeft, ZoomIn, ZoomOut, Home, Maximize2, EyeOff, Eye, Search, Save, Lock, Undo, Redo, Sparkles } from 'lucide-react';
+import { Download, Expand, Minimize, Plus, Layout, List, ArrowLeft, ZoomIn, ZoomOut, Home, Maximize2, EyeOff, Eye, Search, Save, Lock, Undo, Redo, Sparkles, FileJson, ChevronUp } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { useEditorStore } from '@/lib/store';
 import { useState } from 'react';
@@ -26,12 +26,13 @@ interface EditorSidebarProps {
 }
 
 export default function EditorSidebar({ projectId, isSaving = false, isGuest = false, readOnly = false, plan = 'free', nodeCount = 0, onUndo, onRedo, onSnapshot, canUndo = false, canRedo = false, onGenerateAI }: EditorSidebarProps) {
-    const { addNodes, zoomIn, zoomOut, fitView, getNodesBounds, getNodes } = useReactFlow();
+    const { addNodes, zoomIn, zoomOut, fitView, getNodesBounds, getNodes, getEdges, getViewport } = useReactFlow();
     const { hideHandles, setHideHandles, toggleCommandPalette } = useEditorStore();
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+    const [showExportMenu, setShowExportMenu] = useState(false);
 
-    const handleDownload = () => {
+    const handleExportPng = () => {
         if (isGuest) {
             toast.error("Please login to download your roadmap.");
             window.location.href = "/login";
@@ -90,6 +91,46 @@ export default function EditorSidebar({ projectId, isSaving = false, isGuest = f
                 const style = document.getElementById('export-hide-handles');
                 if (style) document.head.removeChild(style);
             });
+    };
+
+    const handleExportJson = () => {
+        if (isGuest) {
+            toast.error("Please login to download your roadmap.");
+            window.location.href = "/login";
+            return;
+        }
+
+        if (!PLAN_LIMITS[plan].canExport) {
+            setShowUpgradeModal(true);
+            return;
+        }
+
+        const nodes = getNodes();
+        const edges = getEdges();
+        const viewport = getViewport();
+
+        const data = {
+            nodes,
+            edges,
+            viewport,
+            exportedAt: new Date().toISOString(),
+            version: "1.0.0"
+        };
+
+        const jsonString = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonString], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `roadmap-${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        toast.success('Roadmap JSON downloaded successfully!');
+        setShowExportMenu(false);
     };
 
     const handleSave = () => {
@@ -313,16 +354,48 @@ export default function EditorSidebar({ projectId, isSaving = false, isGuest = f
                     {/* Object Tree Toggle */}
 
 
-                    {/* Export PNG */}
-                    <button
-                        onClick={handleDownload}
-                        className="p-2 md:p-3 hover:bg-muted rounded-xl transition-colors text-muted-foreground hover:text-foreground relative group"
-                        title="Export PNG"
-                    >
-                        {!PLAN_LIMITS[plan].canExport && !isGuest && <Lock size={12} className="absolute top-2 right-2 text-primary" />}
-                        <Download size={20} className={!PLAN_LIMITS[plan].canExport && !isGuest ? "opacity-50" : ""} />
-                        <span className="hidden md:block absolute left-full top-2 ml-2 px-2 py-1 bg-popover text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border pointer-events-none z-50 text-foreground shadow-md">Export PNG</span>
-                    </button>
+                    {/* Export Dropdown */}
+                    <div className="relative group">
+                        <button
+                            onClick={() => setShowExportMenu(!showExportMenu)}
+                            className="p-2 md:p-3 hover:bg-muted rounded-xl transition-colors text-muted-foreground hover:text-foreground relative"
+                            title="Export"
+                        >
+                            <Download size={20} />
+                            {!PLAN_LIMITS[plan].canExport && !isGuest && <Lock size={12} className="absolute top-2 right-2 text-primary" />}
+                            <span className="hidden md:block absolute left-full top-2 ml-2 px-2 py-1 bg-popover text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border pointer-events-none z-50 text-foreground shadow-md">Export</span>
+                        </button>
+
+                        {showExportMenu && (
+                            <div className="absolute bottom-full left-0 mb-2 md:mb-0 md:bottom-0 md:left-full md:ml-2 min-w-[150px] bg-popover border border-border rounded-xl shadow-xl p-1 z-50 animate-in fade-in zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2">
+                                <button
+                                    onClick={() => {
+                                        handleExportPng();
+                                        setShowExportMenu(false);
+                                    }}
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-muted rounded-lg transition-colors"
+                                >
+                                    <Download size={16} />
+                                    <span>Export PNG</span>
+                                </button>
+                                <button
+                                    onClick={handleExportJson}
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-muted rounded-lg transition-colors"
+                                >
+                                    <FileJson size={16} />
+                                    <span>Export JSON</span>
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Overlay to close menu when clicking outside */}
+                        {showExportMenu && (
+                            <div
+                                className="fixed inset-0 z-40 bg-transparent"
+                                onClick={() => setShowExportMenu(false)}
+                            />
+                        )}
+                    </div>
                 </div>
             </div>
 
